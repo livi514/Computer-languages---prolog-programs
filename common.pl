@@ -9,12 +9,16 @@
 
 % The solution given by the newspaper was 19, 31, 29, 16, 25, 23, 28, and 27.
 
+% Calculating ages whose square is a three-digit number with different digits.
+% Between 10 and 31, because 10^2 = 100 and 31^2 = 961.
+% Lazy evalution will give you one solution at a time.
 age(A)
   :- between(10, 31, A),
      N is A * A,
     digits(N, S),
     different(S).
 
+% Converting a number into a list of its digits.
 digits(N, [N])
   :- N < 10.
 digits(N, W)
@@ -23,15 +27,19 @@ digits(N, W)
     digits(A, V),
     append(V, [B], W).
 
+% Integer division and modulus.
 divmod(P, Q, A, B)
   :- A is P div Q,
     B is P mod Q.
 
+% Checking that all elements in a list are different.
 different([]).
 different([X|XS])
+% negation - if X is a member of XS, the condition fails
   :- \+ member(X, XS),
     different(XS).
 
+% Generating ages for all friends, ensuring they are different and that Lucy is the youngest.
 generator([A,C,J,L,N,R,S,V])
   :- age(L),
     age(A), A > L,
@@ -42,6 +50,8 @@ generator([A,C,J,L,N,R,S,V])
     age(S), S > L, \+ member(S, [A,C,J,N,R]),
     age(V), V > L, \+ member(V, [A,C,J,N,R,S]).
 
+% Selecting only those combinations that satisfy the letter-digit commonality condition.
+% Successive permutations of two-of-three digits may also be obtained by backtracking.
 selector([A,C,J,L,N,R,S,V])
   :- check([a,l,a,n],   [c,a,r,y],     A, C),
     check([a,l,a,n],   [j,a,m,e,s],   A, J),
@@ -72,6 +82,7 @@ selector([A,C,J,L,N,R,S,V])
     check([r,i,c,k,y], [v,i,c,t,o,r], R, V),
     check([s,t,e,v,e], [v,i,c,t,o,r], S, V).
 
+% Checking the commonality condition between two names and their corresponding ages.
 check(N1, N2, A1, A2)
   :- T1 is A1 * A1,
      T2 is A2 * A2,
@@ -79,6 +90,7 @@ check(N1, N2, A1, A2)
     digits(T2, S2),
     exactly(N1, N2, S1, S2).
 
+% Ensuring that two lists have common elements precisely when two other lists do.
 exactly(N1, N2, S1, S2)
   :- intersection(N1, N2, VS), VS = [],
     intersection(S1, S2, WS), WS = [].
