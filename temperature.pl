@@ -77,3 +77,5 @@ digits(N, W)
 divmod(A, B, D, M)
   :- D is A div B,
     M is A mod B.
+
+  
